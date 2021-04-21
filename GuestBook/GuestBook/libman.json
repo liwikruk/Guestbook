@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "defaultProvider": "cdnjs",
+  "libraries": [
+    {
+      "library": "jquery@3.6.0",
+      "destination": "wwwroot/lib/jquery/",
+      "files": [
+        "jquery.min.js"
+      ]
+    },
+    {
+      "library": "toastr.js@2.1.4",
+      "destination": "wwwroot/lib/toastr.js/"
+    },
+    {
+      "library": "twitter-bootstrap@4.6.0",
+      "destination": "wwwroot/twitter-bootstrap/"
+    },
+    {
+      "library": "bootstrap-vue@2.21.2",
+      "destination": "wwwroot/bootstrap-vue/"
+    },
+    {
+      "library": "vue@2.4.2",
+      "destination": "wwwroot/lib/vue/"
+    }
+  
+]
+}

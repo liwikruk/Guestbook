@@ -1,0 +1,104 @@
+﻿<div id="app">
+    <button class="btn bg-info text-white" style="display:block; margin-bottom:5%;" v-on:click="showNewCommentModal">Add comment</button>
+    <div style="display:inline-block; margin-left:4%; " v-for="(comment,index) in comment">
+        <div class="modal-body bg-dark text-white" style=" word-break: break-word; margin: 2% 0% 5% 0%; border-radius: 24px;">
+            <div class="form-group">
+                <label for="name">{{comment.name}}</label>
+            </div>
+            <div class="form-group">
+                <label for="email">Email: {{comment.email}}</label>
+
+            </div>
+            <div class="form-group">
+                <label for="message">{{comment.message}}</label>
+            </div>
+        </div>
+    </div>
+    <div class="modal" id="addNewCommentModal" tabindex="-1">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Add comment</h5>
+                    <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <form onsubmit="sendForm();return false">
+                    <div class="modal-body">
+                        <div class="form-group">
+                            <label for="name">Name</label>
+                            <input v-model="name" name="Name" type="text" class="form-control" style="width:100%" minlength=4 maxlength=40>
+                        </div>
+                        <div class="form-group">
+                            <label for="email">Email</label>
+                            <input v-model="email" name="Email" type="text" class="form-control" style="width:100%" minlength=4 maxlength=40>
+                        </div>
+                        <div class="form-group">
+                            <label for="message">Message</label>
+                            <textarea v-model="message" name="Message" type="text" class="form-control" style="width:100%" ROWS=6 COLS=60 minlength=20 maxlength=400></textarea>
+                        </div>
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Close</button>
+                        <button type="submit" class="btn btn-primary">Save changes</button>
+                    </div>
+                </form>        
+            </div>
+        </div>
+    </div>
+</div>
+@section scripts{
+    <script src="~/lib/vue/vue.js"></script>
+    <script src="~/lib/twitter-bootstrap/js/bootstrap.js"></script>    
+    <script>
+        function sendForm() {
+            app.addComment();
+        }
+        var app = new Vue({
+            el: "#app",
+            data: {
+                comment: [],
+                name: "",
+                email: "",
+                message: ""
+            },
+            created: function () {
+                this.getComment();
+            },
+            methods: {
+                showNewCommentModal: function () {
+                    $("#addNewCommentModal").modal("show");
+                },
+                addComment: function () {
+                    var vm = this;
+                    var newComment = {
+                        Name: vm.name,
+                        Email: vm.email,
+                        Message: vm.message
+                    }
+                    $.ajax({
+                        url: "/comment", data: JSON.stringify(newComment), method: "POST", dataType: "json", contentType: 'application/json'
+                    })
+                        .done(function (data) {
+                            toastr.success("Success");
+                            app.getComment();
+                        }).fail(function () {
+                            toastr.error("Error");
+                        }).always(function () {
+                            vm.name = "";
+                            vm.email = "";
+                            vm.message = "";
+                            $("#addNewCommentModal").modal("hide");
+                        });
+                },
+                getComment: function () {
+                    var vm = this;
+                    $.ajax({ url: "/comment", method: "GET" })
+                        .done(function (data) {
+                            vm.comment = data;
+                        }).fail(function () {
+                            toastr.error("Error");
+                        });
+                }
+            }
+        });
+    </script>
+}
